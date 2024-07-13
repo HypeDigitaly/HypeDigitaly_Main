@@ -1,15 +1,28 @@
-/* Base styles */
 .voiceflow-chat {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial, sans-serif;
 }
 
 .vfrc-widget--chat {
+  animation: fadeInChat 1s ease-out;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Header styles */
+.vfrc-assistant-info--title {
+  font-size: 18px;
+  color: #2D3748;
+}
+
+.vfrc-assistant-info--description {
+  color: #4A5568;
+}
+
+.vfrc-icon.c-dhzjXW-iPJLV-css {
+  width: 24px;
+  height: 24px;
+}
+
 .vfrc-header {
   background-color: #4FD1C5;
   height: 60px;
@@ -19,28 +32,78 @@
   justify-content: space-between;
 }
 
-.vfrc-header--title {
-  color: #FFFFFF;
-  font-size: 16px;
-  font-weight: 600;
+.c-kIbiaN-eyfkxi-size-large {
+  width: 72px;
+  height: 72px;
+  background-color: #4FD1C5;
 }
 
-.vfrc-header--button {
-  background: none;
+.c-iCDrnV .c-kIbiaN {
+  width: 40px;
+  height: 40px;
+  background-color: #4FD1C5;
+}
+
+.c-kIbiaN-icyFRzP-css img {
+  background-color: #4FD1C5;
+}
+
+.c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
+  background-color: #4FD1C5;
+  width: 32px;
+  height: 32px;
+}
+
+.c-dzcdPv .vfrc-header--button {
   border: none;
-  color: #FFFFFF;
+  padding: 0px;
   cursor: pointer;
+  color: #FFFFFF;
+  border-radius: 8px;
+  height: 32px;
+  width: 32px;
+  transition: all 100ms ease 0s;
 }
 
-/* Chat area styles */
-.vfrc-chat {
-  background-color: #FFFFFF;
-  height: calc(100% - 120px); /* Adjust based on header and input area height */
-  overflow-y: auto;
-  padding: 20px;
+.vfrc-chat-dialog {
+  flex: 1 1 0px;
+  overflow: hidden;
+  min-height: 0px;
+  color: #2D3748;
+  position: relative;
+  direction: ltr;
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+.c-cNrVYs .c-fYYkXN {
+  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.c-fYYkXN {
+  border: 1px solid #E2E8F0;
+}
+
+.c-bXTvXv-lckiv-type-info {
+  background-color: #E6FFFA;
+  color: #2C7A7B;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial, sans-serif;
+  border-radius: 15px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.c-bXTvXv-lckiv-type-info:hover {
+  background-color: #B2F5EA;
 }
 
 .vfrc-message {
+  font-weight: 400;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial, sans-serif;
   margin-bottom: 15px;
 }
 
@@ -61,7 +124,42 @@
   margin-left: auto;
 }
 
-/* Input area styles */
+.vfrc-button--secondary {
+  display: inline-block;
+  border: 1px solid #E6FFFA;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 15px;
+  padding: 8px 12px;
+  margin: 0 8px 8px 0;
+  box-sizing: border-box;
+  background-color: #E6FFFA;
+  color: #2C7A7B;
+  cursor: pointer;
+  transition: background-color 50ms ease-in-out 0s, border-color 100ms ease-in-out 0s;
+  white-space: normal;
+  text-align: left;
+}
+
+.vfrc-button--secondary:hover {
+  background-color: #B2F5EA;
+  border-color: #B2F5EA;
+}
+
+.vfrc-header--title {
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.vfrc-widget--launcher {
+  background-color: transparent;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
 .vfrc-chat-input {
   background-color: #FFFFFF;
   border-top: 1px solid #E2E8F0;
@@ -93,77 +191,6 @@
   cursor: pointer;
 }
 
-.vfrc-chat-input--button:hover {
-  background-color: #38B2AC;
-}
-
-/* Custom button styles */
-.custom-button {
-  background-color: #E6FFFA;
-  color: #2C7A7B;
-  border: none;
-  border-radius: 15px;
-  padding: 8px 12px;
-  font-size: 14px;
-  cursor: pointer;
-  margin-right: 8px;
-  margin-bottom: 8px;
-}
-
-.custom-button:hover {
-  background-color: #B2F5EA;
-}
-
-/* Proactive message styles */
-.vfrc-widget--launcher {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-}
-
-.vfrc-launcher {
-  position: relative;
-}
-
-.vfrc-launcher__popup {
-  position: absolute;
-  bottom: 100%;
-  right: 0;
-  background-color: #4FD1C5;
-  color: #FFFFFF;
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 280px;
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.vfrc-launcher__popup::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  right: 20px;
-  border-width: 10px 10px 0;
-  border-style: solid;
-  border-color: #4FD1C5 transparent transparent transparent;
-}
-
-.vfrc-launcher__popup-close {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  background: none;
-  border: none;
-  color: #FFFFFF;
-  font-size: 18px;
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
-}
-
 .vfrc-launcher.c-bQoszf {
   background: #4FD1C5;
   border: none;
@@ -183,59 +210,77 @@
   border-radius: 50%;
 }
 
-/* Responsive adjustments */
-@media (max-width: 575.98px) {
-  .vfrc-widget--chat {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 0;
-  }
-
-  .vfrc-chat {
-    height: calc(100% - 120px);
-  }
+.vfrc-chat {
+  background-color: #FFFFFF;
+  height: calc(100% - 120px);
+  overflow-y: auto;
+  padding: 20px;
 }
 
-/* Additional styles */
-.vfrc-assistant-info--title {
-  font-size: 18px;
-  color: #2D3748;
-  margin-bottom: 5px;
-}
-
-.vfrc-assistant-info--description {
-  color: #4A5568;
-  font-size: 14px;
-}
-
-.c-cejRVw {
-  padding: 10px;
+.vfrc-footer {
   background-color: #F7FAFC;
+  border-top: solid 1px #E2E8F0;
+  padding: 10px;
   font-size: 12px;
   color: #4A5568;
   text-align: center;
 }
 
+.c-fbwYwp {
+  background-color: #4FD1C5;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: "DM Sans", sans-serif;
+  color: #FFFFFF;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 280px;
+}
+
+.c-cejRVw {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0 var(--space-3) 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 17px;
+  color: #4A5568;
+}
+
 .c-cejRVw a {
-  color: #4FD1C5;
+  margin-left: 0.5ch;
   text-decoration: none;
+  color: #4FD1C5;
 }
 
-/* Scrollbar styles */
-.vfrc-chat::-webkit-scrollbar {
-  width: 6px;
+@media screen and (min-width: 768px) {
+  .vfrc-widget--chat {
+    max-height: 725px !important;
+    width: 425px !important;
+    border-radius: 10px;
+  }
 }
 
-.vfrc-chat::-webkit-scrollbar-track {
-  background: #F7FAFC;
+@media (max-width: 767.98px) and (min-width: 576px) {
+  .vfrc-widget--chat {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0px !important;
+  }
 }
 
-.vfrc-chat::-webkit-scrollbar-thumb {
-  background-color: #CBD5E0;
-  border-radius: 3px;
+@media (max-width: 575.98px) {
+  .vfrc-widget--chat {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0px !important;
+  }
+  .vfrc-prompt,
+  .vfrc-footer {
+    border-radius: 0;
+  }
 }
