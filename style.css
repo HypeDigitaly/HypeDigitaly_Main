@@ -44,11 +44,11 @@
 .c-iCDrnV .c-kIbiaN {
   width: 40px;
   height: 40px;
-  background-color: rgb(22,3,48);
+  background-color: #7A2870; /* Changed from rgb(22,3,48) */
 }
 
 .c-kIbiaN-icyFRzP-css img {
-  background-color: rgb(22,3,48);
+  background-color: #7A2870; /* Changed from rgb(22,3,48) */
 }
 
 .c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
@@ -180,7 +180,7 @@
 }
 
 .vfrc-chat-input {
-  background-color: #160330;
+  background-color: #7A2870; /* Changed from #160330 */
 }
 
 .vfrc-widget--launcher {
@@ -216,7 +216,7 @@
 }
 
 .c-fbwYwp {
-  background-color: rgb(170, 116, 246);
+  background-color: #AA39A; /* Changed from rgb(170, 116, 246) */
   font-size: 15px;
   font-weight: 700;
   font-family: "DM Sans", sans-serif;
@@ -240,7 +240,7 @@
 .c-cejRVw a {
   margin-left: 0.5ch;
   text-decoration: none;
-  color: #9727ff;
+  color: #AA39A; /* Changed from #9727ff */
 }
 
 @media screen and (min-width: 768px) {
@@ -279,7 +279,7 @@
 }
 
 .vfrc-header {
-  background-color: rgb(22,3,48);
+  background-color: #7A2870; /* Changed from rgb(22,3,48) */
   height: 66px;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
@@ -287,7 +287,7 @@
 
 .vfrc-footer {
   background-color: #000000;
-  border-top: solid 1px rgb(44, 6, 96);
+  border-top: solid 1px #7A2870; /* Changed from rgb(44, 6, 96) */
 }
 
 ::-webkit-scrollbar {
@@ -303,7 +303,7 @@
 }
 
 .c-PJLV-gJqBfM-from-user {
-  background-color: rgb(87,12,192);
+  background-color: #AA39A; /* Changed from rgb(87,12,192) */
   color: #ffffff;
 }
 
@@ -315,7 +315,7 @@
 
 .vfrc-chat-input textarea,
 .vfrc-chat-input--button {
-  background-color: rgb(22, 3, 48) !important;
+  background-color: #7A2870 !important; /* Changed from rgb(22, 3, 48) */
   color: #ffffff;
 }
 
