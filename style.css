@@ -4,9 +4,9 @@
 
 .vfrc-widget--chat {
   animation: fadeInChat 1s ease-out;
-  border-radius: 10px;
+  border-radius: 0;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: none;
 }
 
 .vfrc-assistant-info--title {
@@ -35,21 +35,21 @@
 .c-kIbiaN-eyfkxi-size-large {
   width: 72px;
   height: 72px;
-  background-color: #4FD1C5;
+  background-color: transparent;
 }
 
 .c-iCDrnV .c-kIbiaN {
   width: 40px;
   height: 40px;
-  background-color: #4FD1C5;
+  background-color: transparent;
 }
 
 .c-kIbiaN-icyFRzP-css img {
-  background-color: #4FD1C5;
+  background-color: transparent;
 }
 
 .c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
-  background-color: #4FD1C5;
+  background-color: transparent;
   width: 32px;
   height: 32px;
 }
@@ -192,10 +192,10 @@
 }
 
 .vfrc-launcher.c-bQoszf {
-  background: #4FD1C5;
+  background: transparent;
   border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
+  box-shadow: none;
+  border-radius: 0;
   width: 60px;
   height: 60px;
   display: flex;
@@ -207,7 +207,7 @@
 .vfrc-launcher img {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 0;
 }
 
 .vfrc-chat {
@@ -261,7 +261,7 @@
   .vfrc-widget--chat {
     max-height: 725px !important;
     width: 425px !important;
-    border-radius: 10px;
+    border-radius: 0 !important;
   }
 }
 
