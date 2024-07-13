@@ -32,7 +32,10 @@
 }
 
 .vfrc-header {
-  background-color: #000000;
+  background-color: #AA39A;
+  height: 66px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .c-kIbiaN-eyfkxi-size-large {
@@ -44,11 +47,11 @@
 .c-iCDrnV .c-kIbiaN {
   width: 40px;
   height: 40px;
-  background-color: rgb(170,57,170);
+  background-color: #AA39A;
 }
 
 .c-kIbiaN-icyFRzP-css img {
-  background-color: rgb(170,57,170);
+  background-color: #AA39A;
 }
 
 .c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
@@ -91,14 +94,14 @@
 }
 
 .c-bXTvXv-lckiv-type-info {
-  background-color: #002b45;
+  background-color: #AA39A;
   font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",
     "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,
     sans-serif;
 }
 
 .c-bXTvXv-lckiv-type-info:hover {
-  background-color: #014a77;
+  background-color: #8A2E7F;
 }
 
 .c-bXTvXv-igaDqE-type-subtle {
@@ -131,13 +134,14 @@
 }
 
 .c-PJLV-jueArD-from-system {
-  background-color: #f3f3f3;
-  color: #000000d9;
+  background-color: #27272a;
+  color: #ffffff;
+  font-size: 15px;
 }
 
 .c-PJLV-gJqBfM-from-user {
-  background-color: rgb(0, 0, 0);
-  color: rgb(255, 255, 255);
+  background-color: #AA39A;
+  color: #ffffff;
 }
 
 .vfrc-button--secondary {
@@ -278,16 +282,9 @@
   background-color: rgb(0, 0, 0);
 }
 
-.vfrc-header {
-  background-color: rgb(22,3,48);
-  height: 66px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-}
-
 .vfrc-footer {
   background-color: #000000;
-  border-top: solid 1px rgb(44, 6, 96);
+  border-top: solid 1px #AA39A;
 }
 
 ::-webkit-scrollbar {
@@ -302,29 +299,18 @@
   color: #ffffff;
 }
 
-.c-PJLV-gJqBfM-from-user {
-  background-color: #AA39A;
-  color: #ffffff;
-}
-
-.c-PJLV-jueArD-from-system {
-  background-color: #27272a;
-  color: #ffffff;
-  font-size: 15px;
-}
-
 .vfrc-chat-input textarea,
 .vfrc-chat-input--button {
-  background-color: rgb(22, 3, 48) !important;
+  background-color: #AA39A !important;
   color: #ffffff;
 }
 
 .vfrc-prompt {
-	background-color: #000000;
+  background-color: #000000;
 }
 .vfrc-prompt button {
-	color: #ffffff;
+  color: #ffffff;
 }
 .vfrc-prompt button:hover {
-	color: #efefef;
+  color: #efefef;
 }
