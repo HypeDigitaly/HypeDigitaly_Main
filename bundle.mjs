@@ -54580,11 +54580,11 @@
                   "✨ Vytvořeno ",
                   Pe.jsx("a", {
                     target: "_blank",
-                    href: "https://hypedigitaly.ai/",
+                    href: "https://hypedigitaly.ai/ ",
                     rel: "noreferrer",
                     children: "HYPEDIGITALY.AI",
                   }),
-                  "  | ",
+                  " | ",
                   Pe.jsx("a", {
                     target: "_blank",
                     href: "https://hypedigitaly.ai/cs/GDPR",
