@@ -23,16 +23,12 @@
   font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",
     "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,
     sans-serif;
-  color: rgb(255, 255, 255);
+  color: rgb(17,24,28);
 }
 
 .vfrc-icon.c-dhzjXW-iPJLV-css {
   width: 24px;
   height: 24px;
-}
-
-.vfrc-header {
-  background-color: #000000;
 }
 
 .c-kIbiaN-eyfkxi-size-large {
@@ -133,6 +129,7 @@
 .c-PJLV-jueArD-from-system {
   background-color: #f3f3f3;
   color: #000000d9;
+  font-size: 15px;
 }
 
 .c-PJLV-gJqBfM-from-user {
@@ -179,10 +176,6 @@
   background-color: transparent;
 }
 
-.vfrc-chat-input {
-  background-color: #160330;
-}
-
 .vfrc-widget--launcher {
   background: transparent;
   box-shadow: none;
@@ -223,6 +216,7 @@
   color: #ffffff;
 }
 
+/* text footer mark */ 
 .c-cejRVw {
   display: flex;
   justify-content: center;
@@ -234,9 +228,10 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 17px;
-  color: #ffffff;
+  color: #00A39A;
 }
 
+/* color footer mark/ your brand/ */
 .c-cejRVw a {
   margin-left: 0.5ch;
   text-decoration: none;
@@ -245,86 +240,41 @@
 
 @media screen and (min-width: 768px) {
   .vfrc-widget--chat {
-    max-height: 725px !important;
-    width: 425px !important;
     border-radius: 20px;
   }
 }
 
-@media (max-width: 767.98px) and (min-width: 576px) {
-  .vfrc-widget--chat {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 0px !important;
-  }
-}
-
-@media (max-width: 575.98px) {
-  .vfrc-widget--chat {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 0px !important;
-  }
-  .vfrc-prompt,
-  .vfrc-footer {
-    border-top-left-radius: 0%;
-    border-top-right-radius: 0%;
-    border-bottom-left-radius: 0%;
-    border-bottom-right-radius: 0%;
-  }
-}
-
-.vfrc-chat {
-  background-color: rgb(0, 0, 0);
-}
-
+/* color header/ change here */ 
 .vfrc-header {
-  background-color: rgb(22,3,48);
+  background-color: rgb(51,182,175);
   height: 66px;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 }
 
-.vfrc-footer {
-  background-color: #000000;
-  border-top: solid 1px rgb(44, 6, 96);
-}
-
-::-webkit-scrollbar {
-  border-left: 1px solid #000000;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
+/* color of the name of the agent/ change here */
 .vfrc-assistant-info--title {
-  color: #ffffff;
+  color: #000000;
 }
 
+/* end chat button/ none or remove */
+.c-bXTvXv-XJvOL-type-warn {
+  display: none;
+}
+
+/* cancel chat color */ 
+.c-bXTvXv-igaDqE-type-subtle {
+  background-color: rgb(51,182,175);
+}
+
+/* message send from user */ 
 .c-PJLV-gJqBfM-from-user {
   background-color: #00A39A;
   color: #ffffff;
 }
 
-.c-PJLV-jueArD-from-system {
-  background-color: #27272a;
-  color: #ffffff;
-  font-size: 15px;
-}
-
+/* color text area */ 
 .vfrc-chat-input textarea,
 .vfrc-chat-input--button {
-  background-color: rgb(22, 3, 48) !important;
-  color: #ffffff;
-}
-
-.vfrc-prompt {
-	background-color: #000000;
-}
-.vfrc-prompt button {
-	color: #ffffff;
-}
-.vfrc-prompt button:hover {
-	color: #efefef;
+  color: #000000;
 }
