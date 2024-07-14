@@ -53578,7 +53578,7 @@
         },
         $e.createElement("path", {
           d: "M17.71,11.29l-5-5a1,1,0,0,0-.33-.21,1,1,0,0,0-.76,0,1,1,0,0,0-.33.21l-5,5a1,1,0,0,0,1.42,1.42L11,9.41V17a1,1,0,0,0,2,0V9.41l3.29,3.3a1,1,0,0,0,1.42,0A1,1,0,0,0,17.71,11.29Z", // Updated path data
-          fill: "currentColor", 
+          fill: "currentColor",
         }),
         $e.createElement(
           "defs",
@@ -54577,14 +54577,17 @@
             e &&
               Pe.jsxs(F2, {
                 children: [
-                  "✨ Vytvořeno ",
+                  "Vytvořeno",
                   Pe.jsx("a", {
                     target: "_blank",
-                    href: "https://hypedigitaly.ai/ ",
+                    href: "https://hypedigitaly.ai/",
                     rel: "noreferrer",
                     children: "HYPEDIGITALY.AI",
                   }),
-                  "   | ",
+                  Pe.jsx("span", {
+                    children: "\u00A0 ",
+                  }),
+                  " | ",
                   Pe.jsx("a", {
                     target: "_blank",
                     href: "https://hypedigitaly.ai/cs/GDPR",
@@ -73859,7 +73862,11 @@
               }),
               Pe.jsx(NE, {}),
               Pe.jsx(rE, {
-                accept: { label: "Ukončit chat", type: "warn", onClick: cA(E, oe) },
+                accept: {
+                  label: "Ukončit chat",
+                  type: "warn",
+                  onClick: cA(E, oe),
+                },
                 cancel: { label: "Zavřít", onClick: oe },
               }),
             ],
