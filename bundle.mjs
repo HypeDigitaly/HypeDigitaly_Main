@@ -54568,7 +54568,7 @@
               ? Pe.jsx(gs, { onClick: i, children: "Začít nový chat" })
               : Pe.jsx(kX, {
                   value: c,
-                  placeholder: "Ask a question...",
+                  placeholder: "Zde napište zprávu...",
                   autoFocus: !0,
                   onValueChange: h,
                   onSend: d,
@@ -54577,14 +54577,14 @@
             e &&
               Pe.jsxs(F2, {
                 children: [
-                  "✨ Made by ",
+                  "✨ Vytvořeno ",
                   Pe.jsx("a", {
                     target: "_blank",
                     href: "https://hypedigitaly.ai/",
                     rel: "noreferrer",
                     children: "HYPEDIGITALY.AI",
                   }),
-                  " | ",
+                  "  | ",
                   Pe.jsx("a", {
                     target: "_blank",
                     href: "https://hypedigitaly.ai/cs/GDPR",
