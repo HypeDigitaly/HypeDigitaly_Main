@@ -54584,7 +54584,7 @@
                     rel: "noreferrer",
                     children: "HYPEDIGITALY.AI",
                   }),
-                  " | ",
+                  "   | ",
                   Pe.jsx("a", {
                     target: "_blank",
                     href: "https://hypedigitaly.ai/cs/GDPR",
