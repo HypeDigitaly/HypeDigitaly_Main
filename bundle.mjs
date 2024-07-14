@@ -53512,7 +53512,7 @@
         $e.createElement("path", {
           id: "vf-close",
           d: "M13.41,12l6.3-6.29a1,1,0,1,0-1.42-1.42L12,10.59,5.71,4.29A1,1,0,0,0,4.29,5.71L10.59,12l-6.3,6.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0L12,13.41l6.29,6.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42Z",
-          fill: "#666666",
+          fill: "#FFFFFF",
         })
       ),
     KK = (e) =>
@@ -53561,10 +53561,10 @@
         },
         $e.createElement(
           "g",
-          { id: "vf-minus", fill: "#666666", fillRule: "evenodd" },
+          { id: "vf-minus", fill: "#FFFFFF", fillRule: "evenodd" },
           $e.createElement("path", {
             d: "M19,11H5a1,1,0,0,0,0,2H19a1,1,0,0,0,0-2Z",
-            fill: "#666666",
+            fill: "#FFFFFF",
           })
         )
       ),
@@ -54565,7 +54565,7 @@
           withWatermark: e,
           children: [
             t
-              ? Pe.jsx(gs, { onClick: i, children: "Start New Chat" })
+              ? Pe.jsx(gs, { onClick: i, children: "Začít nový chat" })
               : Pe.jsx(kX, {
                   value: c,
                   placeholder: "Ask a question...",
@@ -54577,12 +54577,19 @@
             e &&
               Pe.jsxs(F2, {
                 children: [
-                  "Powered ⚡ by",
+                  "✨ Made by ",
                   Pe.jsx("a", {
                     target: "_blank",
-                    href: "https://www.nexusflowinnovations.com/",
+                    href: "https://hypedigitaly.ai/",
                     rel: "noreferrer",
-                    children: "NFI",
+                    children: "HYPEDIGITALY.AI",
+                  }),
+                  " | ",
+                  Pe.jsx("a", {
+                    target: "_blank",
+                    href: "https://hypedigitaly.ai/cs/GDPR",
+                    rel: "noreferrer",
+                    children: "GDPR",
                   }),
                 ],
               }),
@@ -55213,9 +55220,9 @@
           n = vA();
         switch (!0) {
           case n.isSame(t, "day"):
-            return "Today";
+            return "Dnes";
           case n.subtract(1, "day").isSame(t, "day"):
-            return "Yesterday";
+            return "Včera";
           default:
             return t.fromNow();
         }
@@ -73839,7 +73846,7 @@
                     x,
                     e &&
                       !!$.session.turns.length &&
-                      Pe.jsx(AC, { children: "The chat has ended" }),
+                      Pe.jsx(AC, { children: "Chat byl ukončen" }),
                   ],
                 }),
               }),
@@ -73852,8 +73859,8 @@
               }),
               Pe.jsx(NE, {}),
               Pe.jsx(rE, {
-                accept: { label: "End Chat", type: "warn", onClick: cA(E, oe) },
-                cancel: { label: "Cancel", onClick: oe },
+                accept: { label: "Ukončit chat", type: "warn", onClick: cA(E, oe) },
+                cancel: { label: "Zavřít", onClick: oe },
               }),
             ],
           });
@@ -74060,8 +74067,8 @@
         d ? Pe.jsx(YP, { className: h }) : null
       );
     },
-    yue = 380,
-    Eue = 800,
+    yue = 425,
+    Eue = 725,
     RC = Yr($r.WIDGET),
     Eg = Ut(RC("div", "chat"), {
       width: yue,
