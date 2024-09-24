@@ -54577,7 +54577,7 @@
             e &&
               Pe.jsxs(F2, {
                 children: [
-                  "Vytvořeno",
+                  "✨ Vytvořeno",
                   Pe.jsx("a", {
                     target: "_blank",
                     href: "https://hypedigitaly.ai/",
@@ -54590,7 +54590,7 @@
                   " | ",
                   Pe.jsx("a", {
                     target: "_blank",
-                    href: "https://hypedigitaly.ai/cs/GDPR",
+                    href: "https://hypedigitaly.ai/GDPR",
                     rel: "noreferrer",
                     children: "GDPR",
                   }),
