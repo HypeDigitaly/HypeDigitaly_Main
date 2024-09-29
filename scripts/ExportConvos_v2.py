@@ -62,7 +62,15 @@ def get_transcript_dialog(transcript_id):
 def extract_messages(dialog):
     messages = []
     for turn in dialog:
-        if turn["type"] == "request":
+        if turn["type"] == "debug" and "payload" in turn and "payload" in turn["payload"]:
+            debug_message = turn["payload"]["payload"].get("message", "")
+            if "CategoryFilter" in debug_message:
+                messages.append({
+                    "role": "DEBUG",
+                    "content": debug_message,
+                    "timestamp": turn.get("startTime", "")
+                })
+        elif turn["type"] == "request":
             if "payload" in turn and "query" in turn["payload"].get("payload", {}):
                 messages.append({
                     "role": "HUMAN",
@@ -85,8 +93,8 @@ def save_transcript_to_txt(transcript_id, messages):
                 file.write(f"DEBUG: {message['content']}\n")
             else:
                 file.write(f"{message['role']}: {message['content']}\n")
-            file.write("----------\n")  # Add separator line
-    print(f"Saved transcript to {filename}")
+            file.write("----------\n")  # Přidá oddělovací čáru
+    print(f"Transkript uložen do {filename}")
 
 def count_human_occurrences():
     human_count = 0
