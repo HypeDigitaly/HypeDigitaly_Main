@@ -5,6 +5,13 @@ from datetime import datetime
 import openpyxl  # Přidejte tento import na začátek souboru
 from openpyxl.styles import Font, Alignment
 import re
+from openpyxl.chart import PieChart, Reference
+from openpyxl.styles import PatternFill
+import random
+import matplotlib.pyplot as plt
+from io import BytesIO
+from openpyxl.drawing.image import Image
+import numpy as np
 
 # Funkce pro načtení konfigurace ze souboru
 def load_config():
@@ -121,8 +128,43 @@ def count_category_occurrences():
     
     return category_counts
 
+def create_pie_chart(category_counts):
+    labels = list(category_counts.keys())
+    sizes = list(category_counts.values())
+    
+    plt.figure(figsize=(10, 8))
+    plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+    plt.axis('equal')
+    plt.title('Rozložení kategorií')
+    
+    # Uložení grafu jako obrázek
+    img_path = os.path.join(OUTPUT_DIRECTORY, 'category_distribution.png')
+    plt.savefig(img_path)
+    plt.close()
+    
+    return img_path
+
 def update_excel_report(human_count, category_counts):
-    excel_filename = f"{OUTPUT_DIRECTORY}_Report.xlsx"
+    excel_filename = os.path.join(OUTPUT_DIRECTORY, f"{START_DATE} to {END_DATE}_Report.xlsx")
+    
+    # Kontrola, zda soubor existuje, pokud ne, vytvoříme nový
+    if not os.path.exists(excel_filename):
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Report"
+        
+        # Základní struktura reportu
+        ws['A1'] = f"REPORT [{START_DATE} - {END_DATE}]"
+        ws['A3'] = "CELKOVÝ POČET AI ODPOVĚDÍ ZA DANÉ OBDOBÍ:"
+        ws['A5'] = "KATEGORIE"
+        ws['B5'] = "POČET"
+        ws['C5'] = "PROCENTO"
+        
+        # Uložíme nově vytvořený soubor
+        wb.save(excel_filename)
+        print(f"Vytvořen nový soubor: {excel_filename}")
+    
+    # Nyní otevřeme existující soubor
     wb = openpyxl.load_workbook(excel_filename)
     ws = wb.active
     
@@ -132,13 +174,42 @@ def update_excel_report(human_count, category_counts):
     print(f"Celkový počet HUMAN odpovědí: {human_count}")
     print("Počty výskytů jednotlivých kategorií:")
     
-    for i, category in enumerate(CATEGORIES, start=6):
-        count = category_counts[category]
+    total_category_count = sum(category_counts.values())
+    
+    # Seřazení kategorií sestupně podle počtu
+    sorted_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)
+    
+    for i, (category, count) in enumerate(sorted_categories, start=6):
+        ws[f'A{i}'] = category
         ws[f'B{i}'] = count
-        print(f"{category}: {count}")
+        ws[f'C{i}'] = f'{count / total_category_count:.2%}'
+        print(f"{category}: {count} ({count / total_category_count:.2%})")
+    
+    # Vytvoření koláčového grafu pomocí matplotlib
+    plt.figure(figsize=(10, 8))
+    labels = [cat for cat, count in sorted_categories if count > 0]
+    sizes = [count for _, count in sorted_categories if count > 0]
+    colors = plt.cm.Set3(np.linspace(0, 1, len(labels)))
+    
+    plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
+    plt.axis('equal')
+    plt.title('Rozložení kategorií')
+    plt.legend(labels, loc="center left", bbox_to_anchor=(1, 0.5))
+    
+    # Uložení grafu jako obrázek
+    img_path = os.path.join(OUTPUT_DIRECTORY, 'category_distribution.png')
+    plt.savefig(img_path, bbox_inches='tight')
+    plt.close()
+    
+    # Vložení obrázku do Excel souboru
+    img = Image(img_path)
+    img.width = 500
+    img.height = 400
+    ws.add_image(img, 'E5')
     
     wb.save(excel_filename)
     print(f"\nReport aktualizován a uložen do souboru: {excel_filename}")
+    print(f"Obrázek grafu uložen do: {img_path}")
 
 def save_report_to_excel(human_count):
     wb = openpyxl.Workbook()
