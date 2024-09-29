@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 import openpyxl  # Přidejte tento import na začátek souboru
 from openpyxl.styles import Font, Alignment
+import re
 
 # Funkce pro načtení konfigurace ze souboru
 def load_config():
@@ -106,6 +107,39 @@ def count_human_occurrences():
                 human_count += content.count("HUMAN:")
     return human_count
 
+def count_category_occurrences():
+    category_counts = {category: 0 for category in CATEGORIES}
+    
+    for filename in os.listdir(OUTPUT_DIRECTORY):
+        if filename.startswith("transcript_") and filename.endswith(".txt"):
+            file_path = os.path.join(OUTPUT_DIRECTORY, filename)
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
+                for category in CATEGORIES:
+                    exact_match = f'\\"{category}\\"'
+                    category_counts[category] += content.count(exact_match)
+    
+    return category_counts
+
+def update_excel_report(human_count, category_counts):
+    excel_filename = f"{OUTPUT_DIRECTORY}_Report.xlsx"
+    wb = openpyxl.load_workbook(excel_filename)
+    ws = wb.active
+    
+    ws['B3'] = human_count
+    
+    print("\nVýsledky hledání kategorií:")
+    print(f"Celkový počet HUMAN odpovědí: {human_count}")
+    print("Počty výskytů jednotlivých kategorií:")
+    
+    for i, category in enumerate(CATEGORIES, start=6):
+        count = category_counts[category]
+        ws[f'B{i}'] = count
+        print(f"{category}: {count}")
+    
+    wb.save(excel_filename)
+    print(f"\nReport aktualizován a uložen do souboru: {excel_filename}")
+
 def save_report_to_excel(human_count):
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -137,6 +171,13 @@ def save_report_to_excel(human_count):
     wb.save(excel_filename)
     print(f"Report uložen do souboru: {excel_filename}")
 
+def print_summary(human_count, category_counts):
+    print("\nSouhrn zpracování:")
+    print(f"1) Počet HUMAN výskytů: {human_count}")
+    print("\n2) Počty výskytů kategorií:")
+    for category, count in category_counts.items():
+        print(f"   {category}: {count}")
+
 def main():
     create_output_directory()
     transcript_ids = get_transcript_ids()
@@ -152,8 +193,10 @@ def main():
             if message['role'] == 'HUMAN':
                 total_human_count += 1
     
-    save_report_to_excel(total_human_count)
-    print(f"Report aktualizován a uložen do souboru: {OUTPUT_DIRECTORY}_Report.xlsx")
+    category_counts = count_category_occurrences()
+    update_excel_report(total_human_count, category_counts)
+    
+    print("Zpracování dokončeno.")
 
 if __name__ == "__main__":
     main()
