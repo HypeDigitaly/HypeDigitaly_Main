@@ -12,7 +12,10 @@ def load_config():
     with open(config_file, 'r') as config_file:
         for line in config_file:
             key, value = line.strip().split('=', 1)
-            config[key] = value.strip()
+            if key == 'CATEGORIES':
+                config[key] = value.strip('[]').split(',')
+            else:
+                config[key] = value.strip()
     return config
 
 # Načtení konfigurace
@@ -24,6 +27,7 @@ PROJECT_ID = config['PROJECT_ID']
 START_DATE = config['START_DATE']
 END_DATE = config['END_DATE']
 OUTPUT_DIRECTORY = config['OUTPUT_DIRECTORY']
+CATEGORIES = config['CATEGORIES']
 
 # Constants
 BASE_URL = "https://api.voiceflow.com/v2/transcripts"
@@ -110,6 +114,16 @@ def save_report_to_excel(human_count):
     ws['B3'] = human_count
     ws['A3'].font = Font(size=14)
     ws['B3'].font = Font(size=14, bold=True)
+    
+    # Přidání nové tabulky s kategoriemi
+    ws['A5'] = "KATEGORIE"
+    ws['B5'] = "POČET"
+    ws['A5'].font = Font(bold=True)
+    ws['B5'].font = Font(bold=True)
+    
+    for i, category in enumerate(CATEGORIES, start=6):
+        ws[f'A{i}'] = category
+        ws[f'B{i}'] = 0
     
     excel_filename = f"{OUTPUT_DIRECTORY}_Report.xlsx"
     wb.save(excel_filename)
