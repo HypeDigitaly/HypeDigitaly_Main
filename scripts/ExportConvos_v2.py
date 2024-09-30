@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 from openpyxl.drawing.image import Image
 import numpy as np
+import matplotlib.colors as mcolors
 
 # Funkce pro načtení konfigurace ze souboru
 def load_config():
@@ -144,103 +145,109 @@ def create_pie_chart(category_counts):
     
     return img_path
 
-def update_excel_report(human_count, category_counts):
-    excel_filename = os.path.join(OUTPUT_DIRECTORY, f"{START_DATE} to {END_DATE}_Report.xlsx")
-    
-    # Kontrola, zda soubor existuje, pokud ne, vytvoříme nový
-    if not os.path.exists(excel_filename):
-        wb = openpyxl.Workbook()
-        ws = wb.active
-        ws.title = "Report"
-        
-        # Základní struktura reportu
-        ws['A1'] = f"REPORT [{START_DATE} - {END_DATE}]"
-        ws['A3'] = "CELKOVÝ POČET AI ODPOVĚDÍ ZA DANÉ OBDOBÍ:"
-        ws['A5'] = "KATEGORIE"
-        ws['B5'] = "POČET"
-        ws['C5'] = "PROCENTO"
-        
-        # Uložíme nově vytvořený soubor
-        wb.save(excel_filename)
-        print(f"Vytvořen nový soubor: {excel_filename}")
-    
-    # Nyní otevřeme existující soubor
-    wb = openpyxl.load_workbook(excel_filename)
-    ws = wb.active
-    
-    ws['B3'] = human_count
-    
-    print("\nVýsledky hledání kategorií:")
-    print(f"Celkový počet HUMAN odpovědí: {human_count}")
-    print("Počty výskytů jednotlivých kategorií:")
-    
-    total_category_count = sum(category_counts.values())
-    
+def create_custom_donut_chart(category_counts):
     # Seřazení kategorií sestupně podle počtu
     sorted_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)
-    
-    for i, (category, count) in enumerate(sorted_categories, start=6):
-        ws[f'A{i}'] = category
-        ws[f'B{i}'] = count
-        ws[f'C{i}'] = f'{count / total_category_count:.2%}'
-        print(f"{category}: {count} ({count / total_category_count:.2%})")
-    
-    # Vytvoření koláčového grafu pomocí matplotlib
-    plt.figure(figsize=(10, 8))
     labels = [cat for cat, count in sorted_categories if count > 0]
     sizes = [count for _, count in sorted_categories if count > 0]
-    colors = plt.cm.Set3(np.linspace(0, 1, len(labels)))
-    
-    plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
-    plt.axis('equal')
-    plt.title('Rozložení kategorií')
-    plt.legend(labels, loc="center left", bbox_to_anchor=(1, 0.5))
-    
-    # Uložení grafu jako obrázek
-    img_path = os.path.join(OUTPUT_DIRECTORY, 'category_distribution.png')
-    plt.savefig(img_path, bbox_inches='tight')
-    plt.close()
-    
-    # Vložení obrázku do Excel souboru
-    img = Image(img_path)
-    img.width = 500
-    img.height = 400
-    ws.add_image(img, 'E5')
-    
-    wb.save(excel_filename)
-    print(f"\nReport aktualizován a uložen do souboru: {excel_filename}")
-    print(f"Obrázek grafu uložen do: {img_path}")
 
-def save_report_to_excel(human_count):
+    # Vytvoření širšího spektra barev duhy v opačném pořadí
+    num_colors = len(labels)
+    rainbow_colors = plt.cm.rainbow(np.linspace(1, 0, num_colors))
+
+    fig, ax = plt.subplots(figsize=(20, 16), subplot_kw=dict(aspect="equal"))
+
+    wedges, texts, autotexts = ax.pie(sizes, wedgeprops=dict(width=0.5), startangle=-40,
+                                      colors=rainbow_colors, autopct='%1.1f%%', pctdistance=0.85)
+
+    bbox_props = dict(boxstyle="round,pad=0.3", fc="w", ec="k", lw=0.72)
+    kw = dict(arrowprops=dict(arrowstyle="-", connectionstyle="angle,angleA=0,angleB=90,rad=10"),
+              bbox=bbox_props, zorder=0, va="center")
+
+    for i, p in enumerate(wedges):
+        ang = (p.theta2 - p.theta1) / 2. + p.theta1
+        y = np.sin(np.deg2rad(ang))
+        x = np.cos(np.deg2rad(ang))
+        horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
+        connectionstyle = f"angle,angleA=0,angleB={ang}"
+        kw["arrowprops"].update({"connectionstyle": connectionstyle})
+        ax.annotate(labels[i], xy=(x, y), xytext=(1.8*np.sign(x), 1.8*y),
+                    horizontalalignment=horizontalalignment, fontsize=12, **kw)
+
+    plt.title(f"Rozložení kategorií\n{START_DATE} - {END_DATE}", fontsize=24, y=1.05)
+
+    for autotext in autotexts:
+        autotext.set_visible(False)
+
+    img_path = os.path.join(OUTPUT_DIRECTORY, 'custom_category_distribution.png')
+    plt.savefig(img_path, bbox_inches='tight', dpi=300)
+    plt.close()
+
+    return img_path
+
+def create_excel_report(ai_responses_count, category_counts):
+    # Vytvoření nového Excel sešitu
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Report"
-    
-    # Nadpis
-    ws.merge_cells('A1:C1')
-    ws['A1'] = f"REPORT [{START_DATE} - {END_DATE}]"
-    ws['A1'].font = Font(size=16, bold=True)
-    ws['A1'].alignment = Alignment(horizontal='center')
-    
-    # Hlavní informace
-    ws['A3'] = "CELKOVÝ POČET AI ODPOVĚDÍ ZA DANÉ OBDOBÍ:"
-    ws['B3'] = human_count
-    ws['A3'].font = Font(size=14)
-    ws['B3'].font = Font(size=14, bold=True)
-    
-    # Přidání nové tabulky s kategoriemi
-    ws['A5'] = "KATEGORIE"
-    ws['B5'] = "POČET"
-    ws['A5'].font = Font(bold=True)
-    ws['B5'].font = Font(bold=True)
-    
-    for i, category in enumerate(CATEGORIES, start=6):
-        ws[f'A{i}'] = category
-        ws[f'B{i}'] = 0
-    
-    excel_filename = f"{OUTPUT_DIRECTORY}_Report.xlsx"
-    wb.save(excel_filename)
-    print(f"Report uložen do souboru: {excel_filename}")
+
+    # Nastavení nadpisu
+    ws['A1'] = f"Report kategorií za období {START_DATE} - {END_DATE}"
+    ws['A1'].font = openpyxl.styles.Font(size=16, bold=True)
+
+    # Přidání počtu AI odpovědí
+    ws['A2'] = "Počet AI odpovědí utracených za dané období:"
+    ws['B2'] = ai_responses_count
+
+    # Zvýraznění počtu AI odpovědí
+    ws['A2'].font = openpyxl.styles.Font(size=14, bold=True, color="FF0000")
+    ws['B2'].font = openpyxl.styles.Font(size=14, bold=True, color="FF0000")
+    ws['A2'].fill = openpyxl.styles.PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+    ws['B2'].fill = openpyxl.styles.PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+
+    # Přidání informace o celkovém počtu kategorizací
+    total_categorizations = sum(category_counts.values())
+    ws['A4'] = f"Celkový počet přiřazení / kategorizací dotazů: {total_categorizations}"
+    ws['A5'] = "Poznámka: 1 dotaz může být přiřazen do více kategorií, proto se celkový počet AI odpovědí nerovná počtu kategorizací."
+
+    # Přidání hlavičky tabulky
+    ws['A7'] = "Kategorie"
+    ws['B7'] = "Počet"
+    for cell in ws['A7:B7'][0]:
+        cell.font = openpyxl.styles.Font(bold=True)
+
+    # Přidání dat kategorií
+    for row, (category, count) in enumerate(category_counts.items(), start=8):
+        ws.cell(row=row, column=1, value=category)
+        ws.cell(row=row, column=2, value=count)
+
+    # Ohraničení tabulky
+    max_row = ws.max_row
+    for row in ws[f'A7:B{max_row}']:
+        for cell in row:
+            cell.border = openpyxl.styles.Border(left=openpyxl.styles.Side(style='thin'),
+                                                 right=openpyxl.styles.Side(style='thin'),
+                                                 top=openpyxl.styles.Side(style='thin'),
+                                                 bottom=openpyxl.styles.Side(style='thin'))
+
+    # Nastavení šířky prvního sloupce
+    ws.column_dimensions['A'].width = 150
+
+    # Vytvoření vlastního grafu
+    img_path = create_custom_donut_chart(category_counts)
+
+    # Vložení obrázku do Excel souboru pod tabulkou
+    img = Image(img_path)
+    img.width = 1000
+    img.height = 800
+    ws.add_image(img, f'A{max_row + 2}')
+
+    # Uložení Excel souboru
+    output_filename = f'report_{START_DATE}_to_{END_DATE}.xlsx'
+    output_path = os.path.join(OUTPUT_DIRECTORY, output_filename)
+    wb.save(output_path)
+
+    print(f"Nový Excel report byl vytvořen a uložen: {output_path}")
 
 def print_summary(human_count, category_counts):
     print("\nSouhrn zpracování:")
@@ -265,7 +272,7 @@ def main():
                 total_human_count += 1
     
     category_counts = count_category_occurrences()
-    update_excel_report(total_human_count, category_counts)
+    create_excel_report(total_human_count, category_counts)
     
     print("Zpracování dokončeno.")
 
