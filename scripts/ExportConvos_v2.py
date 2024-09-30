@@ -155,7 +155,8 @@ def create_custom_donut_chart(category_counts):
     num_colors = len(labels)
     rainbow_colors = plt.cm.rainbow(np.linspace(1, 0, num_colors))
 
-    fig, ax = plt.subplots(figsize=(20, 16), subplot_kw=dict(aspect="equal"))
+    # Změna velikosti figury na čtvercový tvar
+    fig, ax = plt.subplots(figsize=(20, 20), subplot_kw=dict(aspect="equal"))  
 
     wedges, texts, autotexts = ax.pie(sizes, wedgeprops=dict(width=0.5), startangle=-40,
                                       colors=rainbow_colors, autopct='%1.1f%%', pctdistance=0.85)
@@ -164,6 +165,7 @@ def create_custom_donut_chart(category_counts):
     kw = dict(arrowprops=dict(arrowstyle="-", connectionstyle="angle,angleA=0,angleB=90,rad=10"),
               bbox=bbox_props, zorder=0, va="center")
 
+    # Úprava umístění popisků
     for i, p in enumerate(wedges):
         ang = (p.theta2 - p.theta1) / 2. + p.theta1
         y = np.sin(np.deg2rad(ang))
@@ -171,14 +173,18 @@ def create_custom_donut_chart(category_counts):
         horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
         connectionstyle = f"angle,angleA=0,angleB={ang}"
         kw["arrowprops"].update({"connectionstyle": connectionstyle})
-        ax.annotate(labels[i], xy=(x, y), xytext=(1.8*np.sign(x), 1.8*y),
-                    horizontalalignment=horizontalalignment, fontsize=12, **kw)
+        ax.annotate(labels[i], xy=(x, y), xytext=(2.2*np.sign(x), 2.2*y),
+                    horizontalalignment=horizontalalignment, fontsize=14, **kw)
 
     plt.title(f"Rozložení kategorií\n{START_DATE} - {END_DATE}", fontsize=24, y=1.05)
 
     for autotext in autotexts:
         autotext.set_visible(False)
 
+    # Odstranění os pro čistší vzhled
+    ax.set_axis_off()
+
+    # Uložení grafu
     img_path = os.path.join(OUTPUT_DIRECTORY, 'custom_category_distribution.png')
     plt.savefig(img_path, bbox_inches='tight', dpi=300)
     plt.close()
@@ -216,8 +222,11 @@ def create_excel_report(ai_responses_count, category_counts):
     for cell in ws['A7:B7'][0]:
         cell.font = openpyxl.styles.Font(bold=True)
 
+    # Seřazení kategorií sestupně podle počtu
+    sorted_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)
+
     # Přidání dat kategorií
-    for row, (category, count) in enumerate(category_counts.items(), start=8):
+    for row, (category, count) in enumerate(sorted_categories, start=8):
         ws.cell(row=row, column=1, value=category)
         ws.cell(row=row, column=2, value=count)
 
