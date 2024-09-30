@@ -1,3 +1,4 @@
+import sys
 import requests
 import os
 import json
@@ -15,11 +16,10 @@ import numpy as np
 import matplotlib.colors as mcolors
 
 # Funkce pro načtení konfigurace ze souboru
-def load_config():
-    config_file = 'ExportConvos_config.txt'
+def load_config(config_file):
     config = {}
-    with open(config_file, 'r') as config_file:
-        for line in config_file:
+    with open(config_file, 'r') as file:
+        for line in file:
             key, value = line.strip().split('=', 1)
             if key == 'CATEGORIES':
                 config[key] = value.strip('[]').split(',')
@@ -27,44 +27,63 @@ def load_config():
                 config[key] = value.strip()
     return config
 
-# Načtení konfigurace
-config = load_config()
+def main(config_file):
+    config = load_config(config_file)
+    
+    global PROJECT_NAME, START_DATE, END_DATE, OUTPUT_DIRECTORY, CATEGORIES
+    auth_token = config['AUTH_TOKEN']
+    project_id = config['PROJECT_ID']
+    PROJECT_NAME = config['PROJECT_NAME']
+    START_DATE = config['START_DATE']
+    END_DATE = config['END_DATE']
+    OUTPUT_DIRECTORY = f"{PROJECT_NAME}_{START_DATE}_to_{END_DATE}"
+    CATEGORIES = config['CATEGORIES']
 
-# Použití načtených hodnot
-AUTH_TOKEN = config['AUTH_TOKEN']
-PROJECT_ID = config['PROJECT_ID']
-START_DATE = config['START_DATE']
-END_DATE = config['END_DATE']
-OUTPUT_DIRECTORY = config['OUTPUT_DIRECTORY']
-CATEGORIES = config['CATEGORIES']
+    base_url = "https://api.voiceflow.com/v2/transcripts"
+    headers = {
+        "Authorization": auth_token,
+        "accept": "application/json"
+    }
 
-# Constants
-BASE_URL = "https://api.voiceflow.com/v2/transcripts"
-HEADERS = {
-    "Authorization": AUTH_TOKEN,
-    "accept": "application/json"
-}
+    create_output_directory()
+    transcript_ids = get_transcript_ids(base_url, headers, project_id)
+    
+    total_human_count = 0
+    
+    for transcript_id in transcript_ids:
+        dialog = get_transcript_dialog(base_url, headers, project_id, transcript_id)
+        messages = extract_messages(dialog)
+        save_transcript_to_txt(transcript_id, messages)
+        
+        for message in messages:
+            if message['role'] == 'HUMAN':
+                total_human_count += 1
+    
+    category_counts = count_category_occurrences()
+    create_excel_report(total_human_count, category_counts)
+    
+    print("Zpracování dokončeno.")
 
 def create_output_directory():
     if not os.path.exists(OUTPUT_DIRECTORY):
         os.makedirs(OUTPUT_DIRECTORY)
-        print(f"Created directory: {OUTPUT_DIRECTORY}")
+        print(f"Vytvořena složka: {OUTPUT_DIRECTORY}")
     else:
-        print(f"Directory already exists: {OUTPUT_DIRECTORY}")
+        print(f"Složka již existuje: {OUTPUT_DIRECTORY}")
 
-def get_transcript_ids():
-    url = f"{BASE_URL}/{PROJECT_ID}"
+def get_transcript_ids(base_url, headers, project_id):
+    url = f"{base_url}/{project_id}"
     params = {
         "startDate": START_DATE,
         "endDate": END_DATE
     }
-    response = requests.get(url, headers=HEADERS, params=params)
+    response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
     return [transcript["_id"] for transcript in response.json()]
 
-def get_transcript_dialog(transcript_id):
-    url = f"{BASE_URL}/{PROJECT_ID}/{transcript_id}"
-    response = requests.get(url, headers=HEADERS)
+def get_transcript_dialog(base_url, headers, project_id, transcript_id):
+    url = f"{base_url}/{project_id}/{transcript_id}"
+    response = requests.get(url, headers=headers)
     response.raise_for_status()
     return response.json()
 
@@ -252,7 +271,7 @@ def create_excel_report(ai_responses_count, category_counts):
     ws.add_image(img, f'A{max_row + 2}')
 
     # Uložení Excel souboru
-    output_filename = f'report_{START_DATE}_to_{END_DATE}.xlsx'
+    output_filename = f'{PROJECT_NAME}_report_{START_DATE}_to_{END_DATE}.xlsx'
     output_path = os.path.join(OUTPUT_DIRECTORY, output_filename)
     wb.save(output_path)
 
@@ -265,25 +284,11 @@ def print_summary(human_count, category_counts):
     for category, count in category_counts.items():
         print(f"   {category}: {count}")
 
-def main():
-    create_output_directory()
-    transcript_ids = get_transcript_ids()
-    
-    total_human_count = 0
-    
-    for transcript_id in transcript_ids:
-        dialog = get_transcript_dialog(transcript_id)
-        messages = extract_messages(dialog)
-        save_transcript_to_txt(transcript_id, messages)
-        
-        for message in messages:
-            if message['role'] == 'HUMAN':
-                total_human_count += 1
-    
-    category_counts = count_category_occurrences()
-    create_excel_report(total_human_count, category_counts)
-    
-    print("Zpracování dokončeno.")
-
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) < 2:
+        print("Chyba: Nebyl zadán název konfiguračního souboru.")
+        print("Použití: python ExportConvos_v2.py <název_konfiguračního_souboru>")
+        sys.exit(1)
+    
+    config_file = sys.argv[1]
+    main(config_file)

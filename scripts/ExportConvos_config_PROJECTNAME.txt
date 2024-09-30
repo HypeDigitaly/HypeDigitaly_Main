@@ -1,0 +1,7 @@
+PROJECT_NAME=UKBOT_v11
+AUTH_TOKEN=VF.DM.66b71a3cbc16165eb58afeaa.EQ1LvlAHtnNsFE3V
+PROJECT_ID=66b718ebcf5adb4c27b402a7
+START_DATE=2024-08-29
+END_DATE=2024-09-30
+OUTPUT_DIRECTORY=2024-08-29 to 2024-09-30
+CATEGORIES=[Administrativa_Uredni_Zalezitosti,Charakteristika_Kraje,Doprava,Dotace,Finance_Hospodareni,Kontakt,Krizove_Situace,Kultura_Pamatkova_Pece,Media_Komunikace,Rozvoj_Projekty,Socialni_Pece,Strategicke_Dokumenty,Ukrajina,Uzemni_Planovani_Stavebni_Rad,Verejne_Zakazky,Vzdelavani,Zdravotnictvi,Zivotni_Prostredi_Zemedelstvi]
