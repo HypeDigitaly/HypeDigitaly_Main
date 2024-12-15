@@ -106,7 +106,7 @@
 
                 try {
                     const response = await fetch(
-                        `https://general-runtime.voiceflow.com/v2/project/${projectID}/user/${userID}/interact/stream?completion_events=true`,
+                        `https://general-runtime.voiceflow.com/v2/project/${projectID}/user/${userID}/interact/stream`,
                         {
                             method: 'POST',
                             headers: {
@@ -130,35 +130,46 @@
                         const {value, done} = await reader.read();
                         if (done) break;
                         
-                        buffer += decoder.decode(value, {stream: true});
-                        const lines = buffer.split('\n');
-                        buffer = lines.pop();
+                        const chunk = decoder.decode(value, {stream: true});
+                        const events = chunk.split('\n\n').filter(Boolean);
 
-                        for (const line of lines) {
-                            if (line.startsWith('data:')) {
-                                try {
-                                    const data = JSON.parse(line.slice(5));
-                                    
-                                    if (data.type === 'completion') {
-                                        if (data.payload.state === 'start') {
-                                            // Vytvoření nové message bubliny pro streaming
-                                            currentMessageDiv = d.createElement('div');
-                                            currentMessageDiv.className = 'vf-stream-message vf-stream-bot-message';
-                                            currentMessageDiv.textContent = '';
-                                            messageContainer.appendChild(currentMessageDiv);
-                                        } 
-                                        else if (data.payload.state === 'content' && currentMessageDiv) {
-                                            // Přidání nového tokenu do existující bubliny
-                                            currentMessageDiv.textContent += data.payload.content;
-                                            messageContainer.scrollTop = messageContainer.scrollHeight;
+                        for (const event of events) {
+                            const lines = event.split('\n');
+                            const eventData = {};
+
+                            for (const line of lines) {
+                                if (line.startsWith('data:')) {
+                                    try {
+                                        const data = JSON.parse(line.slice(5));
+                                        
+                                        if (data.type === 'text' || data.type === 'speak') {
+                                            if (!currentMessageDiv) {
+                                                currentMessageDiv = d.createElement('div');
+                                                currentMessageDiv.className = 'vf-stream-message vf-stream-bot-message';
+                                                currentMessageDiv.textContent = '';
+                                                messageContainer.appendChild(currentMessageDiv);
+                                            }
+                                            
+                                            // Přidáváme text po znacích s malým zpožděním
+                                            const message = data.payload.message;
+                                            let index = 0;
+                                            
+                                            const typeCharacter = async () => {
+                                                if (index < message.length) {
+                                                    currentMessageDiv.textContent += message[index];
+                                                    messageContainer.scrollTop = messageContainer.scrollHeight;
+                                                    index++;
+                                                    await new Promise(resolve => setTimeout(resolve, 20)); // 20ms zpoždění mezi znaky
+                                                    await typeCharacter();
+                                                }
+                                            };
+                                            
+                                            await typeCharacter();
+                                            currentMessageDiv = null; // Reset pro další zprávu
                                         }
-                                    } 
-                                    else if (data.type === 'text') {
-                                        // Pro nestreaming zprávy
-                                        addMessage(data.payload.message);
+                                    } catch (e) {
+                                        console.error('Chyba při parsování dat:', e);
                                     }
-                                } catch (e) {
-                                    console.error('Chyba při parsování dat:', e);
                                 }
                             }
                         }
