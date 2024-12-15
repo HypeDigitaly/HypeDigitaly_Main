@@ -159,7 +159,7 @@
                                                     currentMessageDiv.textContent += message[index];
                                                     messageContainer.scrollTop = messageContainer.scrollHeight;
                                                     index++;
-                                                    await new Promise(resolve => setTimeout(resolve, 20)); // 20ms zpoždění mezi znaky
+                                                    await new Promise(resolve => setTimeout(resolve, 5)); // 20ms zpoždění mezi znaky
                                                     await typeCharacter();
                                                 }
                                             };
