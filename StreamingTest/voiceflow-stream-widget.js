@@ -102,6 +102,8 @@
                 addMessage(message, true);
                 input.value = '';
 
+                let currentMessageDiv = null;
+
                 try {
                     const response = await fetch(
                         `https://general-runtime.voiceflow.com/v2/project/${projectID}/user/${userID}/interact/stream?completion_events=true`,
@@ -136,10 +138,24 @@
                             if (line.startsWith('data:')) {
                                 try {
                                     const data = JSON.parse(line.slice(5));
-                                    if (data.type === 'text') {
+                                    
+                                    if (data.type === 'completion') {
+                                        if (data.payload.state === 'start') {
+                                            // Vytvoření nové message bubliny pro streaming
+                                            currentMessageDiv = d.createElement('div');
+                                            currentMessageDiv.className = 'vf-stream-message vf-stream-bot-message';
+                                            currentMessageDiv.textContent = '';
+                                            messageContainer.appendChild(currentMessageDiv);
+                                        } 
+                                        else if (data.payload.state === 'content' && currentMessageDiv) {
+                                            // Přidání nového tokenu do existující bubliny
+                                            currentMessageDiv.textContent += data.payload.content;
+                                            messageContainer.scrollTop = messageContainer.scrollHeight;
+                                        }
+                                    } 
+                                    else if (data.type === 'text') {
+                                        // Pro nestreaming zprávy
                                         addMessage(data.payload.message);
-                                    } else if (data.type === 'completion' && data.payload.state === 'content') {
-                                        addMessage(data.payload.content);
                                     }
                                 } catch (e) {
                                     console.error('Chyba při parsování dat:', e);
