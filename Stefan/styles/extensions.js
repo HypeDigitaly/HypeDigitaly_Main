@@ -13,12 +13,10 @@ export const BrowserDataExtension = {
       }, {});
       return cookies;
     };
-
     const getBrowserInfo = () => {
       const userAgent = navigator.userAgent;
       let browserName = "Unknown";
       let browserVersion = "Unknown";
-
       if (/chrome/i.test(userAgent)) {
         browserName = "Chrome";
         browserVersion = userAgent.match(/chrome\/([\d.]+)/i)?.[1] || "Unknown";
@@ -32,27 +30,14 @@ export const BrowserDataExtension = {
         browserName = "Internet Explorer";
         browserVersion = userAgent.match(/(msie\s|rv:)([\d.]+)/i)?.[2] || "Unknown";
       }
-
       return { browserName, browserVersion };
     };
-
     const getViewportSize = () => {
       const width = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
       const height = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
       return { width, height };
     };
-
-    const getIpAddress = async () => {
-      try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        return data.ip;
-      } catch (error) {
-        return "Unable to fetch IP address";
-      }
-    };
-
-    const ip = await getIpAddress();
+    
     const url = window.location.href;
     const params = new URLSearchParams(window.location.search).toString();
     const cookies = getCookies();
@@ -67,11 +52,9 @@ export const BrowserDataExtension = {
     const screenWidth = window.screen.width;
     const screenHeight = window.screen.height;
     const { width: viewportWidth, height: viewportHeight } = getViewportSize();
-
     window.voiceflow.chat.interact({
       type: "complete",
       payload: {
-        ip,
         url,
         params,
         cookies,
