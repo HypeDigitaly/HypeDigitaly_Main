@@ -134,11 +134,11 @@ export const BrowserDataExtension = {
     };
 
     const calculateFingerprint = (data) => {
-      // Primary network identifier
+      // Network identifier
       const networkId = data.ip_address;
       
-      // System-specific identifiers (to differentiate computers in office)
-      const systemId = [
+      // Hardware-specific identifiers (highest importance - most stable across browsers)
+      const hardwareId = [
         data.os,
         data.osVersion,
         data.deviceVendor,
@@ -148,7 +148,11 @@ export const BrowserDataExtension = {
         `${data.screen.width}x${data.screen.height}`,
         data.screen.colorDepth,
         data.screen.pixelRatio,
-        data.platform,
+        data.platform
+      ].join('::');
+
+      // Browser-specific identifiers (lower importance - changes with different browsers)
+      const browserId = [
         data.browser,
         data.browserVersion,
         data.engine,
@@ -157,7 +161,7 @@ export const BrowserDataExtension = {
         data.availableResolution
       ].join('::');
       
-      // User environment (less important for office setup)
+      // User environment (lowest importance)
       const envId = [
         data.language,
         data.systemLanguage,
@@ -173,9 +177,10 @@ export const BrowserDataExtension = {
 
       // Combine components with different weights
       const components = [
-        getWeightedComponent(networkId, 1),     // IP gets lower weight (shared in office)
-        getWeightedComponent(systemId, 3),      // System specs get highest weight (unique per PC)
-        getWeightedComponent(envId, 1)          // Environment gets lower weight (similar in office)
+        getWeightedComponent(networkId, 1),     // IP gets low weight
+        getWeightedComponent(hardwareId, 4),    // Hardware gets highest weight
+        getWeightedComponent(browserId, 1),     // Browser info gets low weight
+        getWeightedComponent(envId, 1)          // Environment gets low weight
       ].join('||');
       
       return hashString(components);
