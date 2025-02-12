@@ -5,6 +5,17 @@ export const BrowserDataExtension = {
     trace.type === "ext_browserData" || 
     trace.payload?.name === "ext_browserData",
   effect: async ({ trace }) => {
+    // Simple hash function implementation
+    const hashString = (str) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32-bit integer
+      }
+      return Math.abs(hash).toString(36); // Convert to base36 for shorter representation
+    };
+
     const getUserIP = async () => {
       try {
         const response = await fetch('https://api.ipify.org/?format=json');
@@ -23,7 +34,6 @@ export const BrowserDataExtension = {
       let engine = "Unknown";
       let engineVersion = "Unknown";
 
-      // Browser detekce
       if (userAgent.includes("Chrome")) {
         name = "Chrome";
         version = userAgent.match(/Chrome\/([\d.]+)/)?.[1] || "Unknown";
@@ -42,7 +52,6 @@ export const BrowserDataExtension = {
         engine = "Trident";
       }
 
-      // Engine version
       if (engine === "Blink") {
         engineVersion = userAgent.match(/Chrome\/([\d.]+)/)?.[1] || "Unknown";
       } else if (engine === "Gecko") {
@@ -71,7 +80,6 @@ export const BrowserDataExtension = {
       let deviceType = "desktop";
       let deviceVendor = "";
 
-      // OS detekce
       if (userAgent.includes("Win")) {
         os = "Windows";
         osVersion = userAgent.match(/Windows NT ([\d.]+)/)?.[1] || "Unknown";
@@ -88,7 +96,6 @@ export const BrowserDataExtension = {
         osVersion = userAgent.match(/OS ([\d_]+)/)?.[1]?.replace(/_/g, '.') || "Unknown";
       }
 
-      // Device type detekce
       if (/Mobi|Android|iPhone|iPad|Windows Phone/i.test(userAgent)) {
         deviceType = "mobile";
         if (/iPad|Android(?!.*Mobile)/i.test(userAgent)) {
@@ -96,7 +103,6 @@ export const BrowserDataExtension = {
         }
       }
 
-      // Device vendor detekce
       if (userAgent.includes("iPhone") || userAgent.includes("iPad")) {
         deviceVendor = "Apple";
       } else if (userAgent.includes("Samsung")) {
@@ -127,17 +133,60 @@ export const BrowserDataExtension = {
       };
     };
 
-    // Získání IP adresy
-    const ipAddress = await getUserIP();
-    
-    // Získání časové zóny
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const calculateFingerprint = (data) => {
+      // Hardware-specific identifiers (unlikely to change between sessions)
+      const hardwareId = [
+        data.cpu,
+        data.processors,
+        data.memory || '',
+        data.touchPoints,
+        `${data.screen.width}x${data.screen.height}`,
+        data.screen.colorDepth,
+        data.screen.pixelRatio,
+        data.currentResolution,
+        data.availableResolution
+      ].join('::');
 
-    // Získání ostatních dat
+      // Software/OS specific identifiers
+      const softwareId = [
+        data.os,
+        data.osVersion,
+        data.platform,
+        data.browser,
+        data.browserVersion,
+        data.engine,
+        data.engineVersion
+      ].join('::');
+
+      // User/Environment specific (helps differentiate on shared IPs)
+      const envId = [
+        data.language,
+        data.systemLanguage,
+        data.timezone,
+        data.deviceVendor,
+        data.device,
+        data.type,
+        data.ip_address  // IP address included in environment identifiers
+      ].join('::');
+
+      // UserAgent is kept separate as it contains many unique identifiers
+      const uaId = data.userAgent;
+
+      // Combine all components with different separators to maintain uniqueness
+      const components = [
+        hardwareId,
+        softwareId,
+        envId,
+        uaId
+      ].join('||');
+      
+      return hashString(components);
+    };
+
+    const ipAddress = await getUserIP();
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const browserDetails = getBrowserDetails();
     const systemInfo = getSystemInfo();
-
-    // Získání aktuální URL
     const url = window.location.href;
 
     const payload = {
@@ -171,6 +220,9 @@ export const BrowserDataExtension = {
         pixelRatio: systemInfo.screen.pixelRatio
       }
     };
+
+    // Calculate fingerprint from the payload data
+    payload.fingerprint = calculateFingerprint(payload);
 
     window.voiceflow.chat.interact({
       type: "complete",
