@@ -137,12 +137,13 @@ export const BrowserDataExtension = {
     const browserDetails = getBrowserDetails();
     const systemInfo = getSystemInfo();
 
+    // Získání aktuální URL
+    const url = window.location.href;
+
     const payload = {
-      // Původní hodnoty
+      url,
       ip_address: ipAddress,
       timezone,
-      
-      // ClientJS ekvivalentní hodnoty
       userAgent: browserDetails.userAgent,
       browser: browserDetails.name,
       browserVersion: browserDetails.version,
@@ -158,15 +159,11 @@ export const BrowserDataExtension = {
       availableResolution: `${systemInfo.screen.availWidth}x${systemInfo.screen.availHeight}`,
       language: browserDetails.language,
       systemLanguage: browserDetails.systemLanguage,
-      
-      // Původní System.Device hodnoty
       type: systemInfo.type,
       platform: systemInfo.platform,
       processors: systemInfo.processors,
       memory: systemInfo.memory,
       touchPoints: systemInfo.touchPoints,
-      
-      // Původní System.Display hodnoty
       screen: {
         width: systemInfo.screen.width,
         height: systemInfo.screen.height,
