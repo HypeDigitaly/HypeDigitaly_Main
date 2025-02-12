@@ -134,50 +134,48 @@ export const BrowserDataExtension = {
     };
 
     const calculateFingerprint = (data) => {
-      // Hardware-specific identifiers (unlikely to change between sessions)
-      const hardwareId = [
+      // Primary network identifier
+      const networkId = data.ip_address;
+      
+      // System-specific identifiers (to differentiate computers in office)
+      const systemId = [
+        data.os,
+        data.osVersion,
+        data.deviceVendor,
         data.cpu,
         data.processors,
-        data.memory || '',
-        data.touchPoints,
+        data.memory || 'unknown',
         `${data.screen.width}x${data.screen.height}`,
         data.screen.colorDepth,
         data.screen.pixelRatio,
-        data.currentResolution,
-        data.availableResolution
-      ].join('::');
-
-      // Software/OS specific identifiers
-      const softwareId = [
-        data.os,
-        data.osVersion,
         data.platform,
         data.browser,
         data.browserVersion,
         data.engine,
-        data.engineVersion
+        data.engineVersion,
+        data.currentResolution,
+        data.availableResolution
       ].join('::');
-
-      // User/Environment specific (helps differentiate on shared IPs)
+      
+      // User environment (less important for office setup)
       const envId = [
         data.language,
         data.systemLanguage,
         data.timezone,
-        data.deviceVendor,
-        data.device,
-        data.type,
-        data.ip_address  // IP address included in environment identifiers
+        data.type
       ].join('::');
 
-      // UserAgent is kept separate as it contains many unique identifiers
-      const uaId = data.userAgent;
+      // Calculate weights for the final hash
+      const getWeightedComponent = (component, weight) => {
+        const hash = hashString(component);
+        return hash.repeat(weight);
+      };
 
-      // Combine all components with different separators to maintain uniqueness
+      // Combine components with different weights
       const components = [
-        hardwareId,
-        softwareId,
-        envId,
-        uaId
+        getWeightedComponent(networkId, 1),     // IP gets lower weight (shared in office)
+        getWeightedComponent(systemId, 3),      // System specs get highest weight (unique per PC)
+        getWeightedComponent(envId, 1)          // Environment gets lower weight (similar in office)
       ].join('||');
       
       return hashString(components);
