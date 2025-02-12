@@ -81,12 +81,24 @@ export const BrowserDataExtension = {
       return "Unknown";
     };
 
+    const getIpAddress = async () => {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+      } catch (error) {
+        return "Unable to fetch IP address";
+      }
+    };
+
     // Collect all system information using native browser APIs
     const { browserName, browserVersion, engineName, engineVersion } = getBrowserInfo();
     const deviceType = getDeviceType();
     const os = getOS();
+    const ip = await getIpAddress();
 
     const systemInfo = {
+      ip: ip,
       url: {
         current: window.location.href,
         pathname: window.location.pathname,
