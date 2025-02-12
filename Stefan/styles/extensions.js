@@ -13,6 +13,7 @@ export const BrowserDataExtension = {
       }, {});
       return cookies;
     };
+
     const getBrowserInfo = () => {
       const userAgent = navigator.userAgent;
       let browserName = "Unknown";
@@ -32,21 +33,24 @@ export const BrowserDataExtension = {
       }
       return { browserName, browserVersion };
     };
+
     const getViewportSize = () => {
       const width = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
       const height = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
       return { width, height };
     };
-    const getIpAddress = async () => {
+
+    const getUserIP = async () => {
       try {
-        const response = await fetch('https://api.ipify.org?format=json');
+        const response = await fetch('https://api.ipify.org/?format=json');
         const data = await response.json();
         return data.ip;
       } catch (error) {
-        return "Unable to fetch IP address";
+        console.error('Error fetching IP:', error);
+        return 'Unknown';
       }
     };
-    const ip = await getIpAddress();
+    
     const url = window.location.href;
     const params = new URLSearchParams(window.location.search).toString();
     const cookies = getCookies();
@@ -61,10 +65,13 @@ export const BrowserDataExtension = {
     const screenWidth = window.screen.width;
     const screenHeight = window.screen.height;
     const { width: viewportWidth, height: viewportHeight } = getViewportSize();
+    
+    // Get IP address before sending the payload
+    const ipAddress = await getUserIP();
+
     window.voiceflow.chat.interact({
       type: "complete",
       payload: {
-        ip,
         url,
         params,
         cookies,
@@ -77,8 +84,9 @@ export const BrowserDataExtension = {
         lang,
         supportsCookies,
         platform,
-        screenResolution: ${screenWidth}x${screenHeight},
-        viewportSize: ${viewportWidth}x${viewportHeight}
+        screenResolution: `${screenWidth}x${screenHeight}`,
+        viewportSize: `${viewportWidth}x${viewportHeight}`,
+        ipAddress
       }
     });
   }
