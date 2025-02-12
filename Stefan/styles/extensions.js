@@ -87,6 +87,12 @@ export const BrowserDataExtension = {
     const os = getOS();
 
     const systemInfo = {
+      url: {
+        current: window.location.href,
+        pathname: window.location.pathname,
+        search: window.location.search,
+        params: Object.fromEntries(new URLSearchParams(window.location.search))
+      },
       browser: {
         name: browserName,
         version: browserVersion,
